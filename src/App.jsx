@@ -32,7 +32,8 @@ function App() {
 
         try {
             // إرسال البيانات إلى الواجهة الخلفية لـ Node.js
-            const response = await fetch('http://localhost:5000/api/register', {
+            const response = await fetch('https://technical-team-04-back.onrender.com/api/register', {
+                // 'https://technical-team-04-back.onrender.com/api/register'
                 method: 'POST', // نوع الطلب هو POST لإرسال البيانات
                 headers: {
                     'Content-Type': 'application/json', // إخبار الخادم بأننا نرسل بيانات JSON
