@@ -22,7 +22,7 @@ function App() {
         e.preventDefault();
 
         try {
-            const response = await fetch('https://technical-team-04-back.onrender.com/registrations', {
+           const response = await fetch('https://technical-team-04-back.onrender.com/registrations',  {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
