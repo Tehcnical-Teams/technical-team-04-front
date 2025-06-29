@@ -1,11 +1,7 @@
 // src/App.js
 import React, { useState } from 'react';
-// If this component has its own styles in a separate file (e.g., App.css),
-// you would import it here: import './App.css';
-// Otherwise, rely on global styles imported in index.js (via index.css).
 
 function App() {
-    // State variables to hold form data
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -17,37 +13,37 @@ function App() {
         comments: '',
     });
 
-    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    // Handle form submission
-    const handleSubmit = async (e) => { // جعل الدالة async للتعامل مع الـ await
-        e.preventDefault(); // منع سلوك إرسال النموذج الافتراضي
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
         try {
-            // إرسال البيانات إلى الواجهة الخلفية لـ Node.js
-            const response = await fetch('https://technical-team-04-back.onrender.com/api/register', {
-                // 'https://technical-team-04-back.onrender.com/api/register'
-                method: 'POST', // نوع الطلب هو POST لإرسال البيانات
+            const response = await fetch('https://technical-team-04-back.onrender.com/registrations', {
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json', // إخبار الخادم بأننا نرسل بيانات JSON
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData), // تحويل كائن formData إلى سلسلة JSON
+                body: JSON.stringify({
+                    full_name: formData.fullName,
+                    email: formData.email,
+                    phone_number: formData.phoneNumber,
+                    university: formData.university,
+                    experience_level: formData.experienceLevel,
+                    preferred_language: formData.preferredLanguage,
+                    team_members: formData.teamMembers,
+                    comments: formData.comments,
+                }),
             });
 
-            // التحقق مما إذا كانت الاستجابة ناجحة (حالة 2xx)
             if (response.ok) {
-                const result = await response.json(); // تحليل استجابة JSON من الواجهة الخلفية
+                const result = await response.json();
                 console.log('Backend response:', result);
                 alert('Registration successful! Thank you.');
-                
-                // اختيارياً: مسح النموذج بعد الإرسال الناجح
+
                 setFormData({
                     fullName: '',
                     email: '',
@@ -58,16 +54,11 @@ function App() {
                     teamMembers: '',
                     comments: '',
                 });
-
             } else {
-                // إذا كانت الاستجابة غير ناجحة (مثل 400, 500)
-                const errorData = await response.json(); // الحصول على تفاصيل الخطأ من الواجهة الخلفية
-                console.error('Registration failed:', errorData);
+                const errorData = await response.json();
                 alert(`Registration failed: ${errorData.message || 'Unknown error'}`);
             }
         } catch (error) {
-            // التعامل مع أخطاء الشبكة أو الأخطاء التي تحدث قبل الوصول إلى الخادم
-            console.error('There was an error submitting the form:', error);
             alert('Could not connect to the server. Please try again later.');
         }
     };
@@ -81,7 +72,7 @@ function App() {
 
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="fullName">Full Name <span className="required-star">*</span></label>
+                    <label htmlFor="fullName">Full Name *</label>
                     <input
                         type="text"
                         id="fullName"
@@ -94,7 +85,7 @@ function App() {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="email">Email Address <span className="required-star">*</span></label>
+                    <label htmlFor="email">Email Address *</label>
                     <input
                         type="email"
                         id="email"
@@ -119,7 +110,7 @@ function App() {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="university">University/Company (Optional)</label>
+                    <label htmlFor="university">University/Company</label>
                     <input
                         type="text"
                         id="university"
@@ -131,7 +122,7 @@ function App() {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="experienceLevel">Experience Level <span className="required-star">*</span></label>
+                    <label htmlFor="experienceLevel">Experience Level *</label>
                     <select
                         id="experienceLevel"
                         name="experienceLevel"
@@ -149,93 +140,49 @@ function App() {
                 </div>
 
                 <div className="form-group">
-                    <label>Preferred Programming Language(s) for Challenges <span className="required-star">*</span></label>
+                    <label>Preferred Programming Language *</label>
                     <div className="radio-group">
-                        <input
-                            type="radio"
-                            id="python"
-                            name="preferredLanguage"
-                            value="python"
-                            checked={formData.preferredLanguage === 'python'}
-                            onChange={handleChange}
-                            required
-                        />
-                        <label htmlFor="python">Python</label>
-
-                        <input
-                            type="radio"
-                            id="javascript"
-                            name="preferredLanguage"
-                            value="javascript"
-                            checked={formData.preferredLanguage === 'javascript'}
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="javascript">JavaScript</label>
-
-                        <input
-                            type="radio"
-                            id="java"
-                            name="preferredLanguage"
-                            value="java"
-                            checked={formData.preferredLanguage === 'java'}
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="java">Java</label>
-
-                        <input
-                            type="radio"
-                            id="cpp"
-                            name="preferredLanguage"
-                            value="cpp"
-                            checked={formData.preferredLanguage === 'cpp'}
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="cpp">C++</label>
-
-                        <input
-                            type="radio"
-                            id="csharp"
-                            name="preferredLanguage"
-                            value="csharp"
-                            checked={formData.preferredLanguage === 'csharp'}
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="csharp">C#</label>
-
-                        <input
-                            type="radio"
-                            id="otherLang"
-                            name="preferredLanguage"
-                            value="other"
-                            checked={formData.preferredLanguage === 'other'}
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="otherLang">Other (specify in notes)</label>
+                        {['python', 'javascript', 'java', 'cpp', 'csharp', 'other'].map((lang) => (
+                            <span key={lang}>
+                                <input
+                                    type="radio"
+                                    id={lang}
+                                    name="preferredLanguage"
+                                    value={lang}
+                                    checked={formData.preferredLanguage === lang}
+                                    onChange={handleChange}
+                                    required
+                                />
+                                <label htmlFor={lang}>
+                                    {lang === 'cpp' ? 'C++' : lang === 'csharp' ? 'C#' : lang.charAt(0).toUpperCase() + lang.slice(1)}
+                                </label>
+                            </span>
+                        ))}
                     </div>
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="teamMembers">Team Members (if registering as a team)</label>
+                    <label htmlFor="teamMembers">Team Members</label>
                     <textarea
                         id="teamMembers"
                         name="teamMembers"
                         rows="4"
                         value={formData.teamMembers}
                         onChange={handleChange}
-                        placeholder="List full names and emails of your 1-3 team members (e.g., John Doe - john@example.com, Jane Smith - jane@example.com). If you don't have a team, leave blank."
+                        placeholder="List full names and emails of your 1-3 team members..."
                     ></textarea>
-                    <p className="note">Teams are 2-4 individuals. If you don't have a full team, we can help you find one!</p>
+                    <p className="note">Teams are 2-4 individuals. Leave blank if you're registering alone.</p>
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="comments">Anything else we should know?</label>
+                    <label htmlFor="comments">Additional Comments</label>
                     <textarea
                         id="comments"
                         name="comments"
                         rows="3"
                         value={formData.comments}
                         onChange={handleChange}
-                        placeholder="e.g., specific accessibility needs, questions, or if you prefer to be placed in a team."
+                        placeholder="Any special needs or questions?"
                     ></textarea>
                 </div>
 
